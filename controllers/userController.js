@@ -10,8 +10,17 @@ const register=async(req,res)=>{
 const login=async(req,res)=>{
 
 }
+//get verify
+const verify=async(req,res)=>{
+  try {
+    res.status(400).send(true)
+  } catch (error) {
+    res.send(error.message)
+  }
+}
 
 module.exports={
     register,
     login,
+    verify,
 }
