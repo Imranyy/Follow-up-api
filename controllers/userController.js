@@ -62,6 +62,16 @@ const login=asyncHandler(async(req,res)=>{
 }
 })
 
+//get users
+const getUsers=asyncHandler(async(req,res)=>{
+  try{
+    const user=await User.find({});
+    res.status(200).send(user)
+  }catch(error){
+    console.log(error.message)
+    res.send(error.message)
+  }
+})
 //auth Middlerware
 const protect=asyncHandler(async(req,res,next)=>{
   let token
@@ -107,5 +117,6 @@ module.exports={
     register,
     login,
     verify,
-    protect
+    protect,
+    getUsers,
 }
