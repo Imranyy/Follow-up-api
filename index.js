@@ -35,7 +35,7 @@ mongoose.connect(process.env.DATABASE,{
     console.log('socket connection made',socket.id);
 
     socket.on('chat',(data)=>{
-        io.sockets.emit('chat',data)
+        socket.broadcast.emit('chat',data)
     })
 })
 })
