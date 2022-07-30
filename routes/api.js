@@ -19,7 +19,8 @@ router.post('/chat',postChat)
 
 //get users
 router.get('/users',getUsers);
-router.get('chat',getChats)
+//get chats
+router.get('/chat',getChats)
 //get verified
 router.get('/verify',protect,verify)
 
