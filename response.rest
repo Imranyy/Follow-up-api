@@ -1,0 +1,23 @@
+
+ GET http://localhost:5000/api/register
+ ###
+
+
+ 
+
+POST http://localhost:5000/api/register 
+content-type:application/json
+{
+    "name":"imran",
+    "number":0754423664,
+    "password":"12"
+}
+
+
+POST https://example.com/comments HTTP/1.1
+content-type: application/json
+
+{
+    "name": "sample",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}
