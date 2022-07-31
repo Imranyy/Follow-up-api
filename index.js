@@ -34,14 +34,15 @@ mongoose.connect(process.env.DATABASE,{
         })
     io.on('connection',(socket)=>{
         //getting the chats from db
-        Chat.find({}).then((res)=>{
+        Chat.find().then(res=>{
             socket.emit('output',res)
         })
     console.log('socket connection made',socket.id);
     
     socket.on('chat',(data)=>{
         //posting chats on db
-        const msg=new Chat({data})
+        const {pic,name,message}=data
+        const msg=new Chat({pic,name,message})
         msg.save().then(()=>{
             //emitting chats to sockets
             io.emit('chat',data)
