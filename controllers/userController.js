@@ -1,6 +1,4 @@
-const mongoose=require('mongoose');
 const User=require('../models/userModel')
-const Chat=require('../models/chatModel')
 const bcrypt=require('bcryptjs');
 const jwt=require('jsonwebtoken')
 require('dotenv').config()
