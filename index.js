@@ -37,7 +37,7 @@ mongoose.connect(process.env.DATABASE,{
         Chat.find().then(res=>{
             socket.emit('output',res)
         })
-    console.log('socket connection made',socket.id);
+    console.log('socket connection made');
     
     socket.on('chat',(data)=>{
         //posting chats on db
@@ -45,7 +45,7 @@ mongoose.connect(process.env.DATABASE,{
         const msg=new Chat({pic,name,message})
         msg.save().then(()=>{
             //emitting chats to sockets
-            io.emit('chat',data)
+            socket.broadcast.emit('chat',data)
         })
     })
 })
