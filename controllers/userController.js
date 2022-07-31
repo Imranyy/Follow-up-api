@@ -62,31 +62,6 @@ const login=asyncHandler(async(req,res)=>{
   res.status(400).send('Invalid Credentials')
 }
 })
-//post chat
-const postChat=asyncHandler(async(req,res)=>{
- try{
-  const {pic,name,message}=req.body;
-  const chat=await Chat.create({
-    pic,
-    name,
-    message})
-  res.send(chat)
- }catch(error){
-  res.send(error.message)
- }
-
-})
-
-//get chats
-const getChats=asyncHandler(async(req,res)=>{
- try{
-  const user=await Chat.find({})
-  res.send(user)
- }catch(error){
-  res.send(error.message)
- }
-})
-
 //get users
 const getUsers=asyncHandler(async(req,res)=>{
   try{
@@ -144,6 +119,4 @@ module.exports={
     verify,
     protect,
     getUsers,
-    postChat,
-    getChats
 }
