@@ -6,6 +6,7 @@ const{
     verify,
     protect,
     getUsers,
+    updateimg
 }=require('../controllers/userController')
 
 //post register
@@ -13,6 +14,8 @@ router.post('/register',register)
 //post login
 router.post('/login',login);
 
+//patch image
+router.patch('/:id',updateimg)
 //get users
 router.get('/users',getUsers);
 //get verified

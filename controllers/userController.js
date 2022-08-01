@@ -1,4 +1,5 @@
 const User=require('../models/userModel')
+const mongoose=require('mongoose')
 const bcrypt=require('bcryptjs');
 const jwt=require('jsonwebtoken')
 require('dotenv').config()
@@ -70,6 +71,23 @@ const getUsers=asyncHandler(async(req,res)=>{
     res.send(error.message)
   }
 })
+
+//patch image
+const updateimg=asyncHandler(async(req,res)=>{
+    const {id}=req.params;
+    if(!mongoose.Types.ObjectId.isValid(id)){
+      return res.status(404).send({error:'No such User'})
+    } 
+    const updateAccount=await User.findOneAndUpdate({_id: id},{
+        ...req.body
+    })
+    if(!updateAccount){
+        return res.status(400).send({error:'No such User'})
+      }
+      res.status(200).send('updated')
+
+})
+
 //auth Middlerware
 const protect=asyncHandler(async(req,res,next)=>{
   let token
@@ -117,4 +135,5 @@ module.exports={
     verify,
     protect,
     getUsers,
+    updateimg
 }
