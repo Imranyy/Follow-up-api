@@ -30,7 +30,7 @@ mongoose.connect(process.env.DATABASE,{
     //socket setup
     const io=socket(server,{
             cors: {
-                origin:'https://chat-with-mee.web.app'
+                
             }
         })
     io.on('connection',(socket)=>{
