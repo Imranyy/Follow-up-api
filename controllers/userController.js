@@ -85,7 +85,7 @@ const updateimg=asyncHandler(async(req,res)=>{
         return res.status(400).send({error:'No such User'})
       }
       res.status(200).send('updated')
-
+ 
 })
 
 //auth Middlerware
