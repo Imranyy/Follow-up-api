@@ -30,6 +30,7 @@ mongoose.connect(process.env.DATABASE,{
     //socket setup
     const io=socket(server,{
             cors: {
+                origin:'https://chat-with-mee.web.app'
             }
         })
     io.on('connection',(socket)=>{
@@ -37,7 +38,7 @@ mongoose.connect(process.env.DATABASE,{
         Chat.find().then(res=>{
             socket.emit('output',res)
         })
-    console.log('socket connection made');
+    console.log(`socket connection made: ${socket.id}`);
     
     socket.on('chat',(data)=>{
         //posting chats on db
@@ -45,7 +46,7 @@ mongoose.connect(process.env.DATABASE,{
         const msg=new Chat({pic,name,message})
         msg.save().then(()=>{
             //emitting chats to sockets
-            socket.broadcast.emit('chat',data)
+            socket.emit('chat',data)
         })
     })
 })
