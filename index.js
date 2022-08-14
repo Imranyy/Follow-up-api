@@ -1,4 +1,6 @@
-const express=require('express')
+const express=require('express');
+const webpush=require('web-push');
+const bodyParser=require('body-parser');
 const socket=require('socket.io');
 const cors=require('cors');
 const mongoose=require('mongoose');
@@ -12,12 +14,19 @@ app.use(cors())
 //serve static
 //app.use(express.static('public'));
 
+//VAPID KEYS
+const publicVapidKey=process.env.PUBLICVAPIDKEY;
+const privateVapidKey=process.env.PRIVATEVAPIDKEY;
+
 //urlencoded
-app.use(express.json())
-app.use(express.urlencoded({extended:true}))
+app.use(express.json());
+app.use(bodyParser.json());
+app.use(express.urlencoded({extended:true}));
 
 //routes
-app.use('/api',require('./routes/api'))
+app.use('/api',require('./routes/api'));
+
+
 
 mongoose.connect(process.env.DATABASE,{
     useUnifiedTopology:true,
@@ -43,6 +52,23 @@ mongoose.connect(process.env.DATABASE,{
     socket.on('chat',(data)=>{
         //posting chats on db
         const {pic,name,message}=data
+            //webpush
+                webpush.setVapidDetails('mailto:imranmat254@gmail.com',publicVapidKey,privateVapidKey);
+                //subscribe route
+                app.post('/subscribe',(req,res)=>{
+                    //get pushSubscription object
+                    const subscription=req.body;
+                    //send 201 -resource created
+                    res.status(201).send({})
+                    //create payload
+                    const payload=JSON.stringify({
+                        title:`New Message from ${name} 😉`,
+                        body:message,
+                        icon:pic
+                    });
+                    //pass object into sendNotification
+                    webpush.sendNotification(subscription,payload).catch(err=>console.error(err))
+                });
         const msg=new Chat({pic,name,message})
         msg.save().then(()=>{
             //emitting chats to sockets
