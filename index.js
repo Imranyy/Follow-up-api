@@ -25,10 +25,26 @@ app.use(express.urlencoded({extended:true}));
 
 //routes
 app.use('/api',require('./routes/api'));
+//webpush
+webpush.setVapidDetails('mailto:imranmat254@gmail.com',publicVapidKey,privateVapidKey);
+//subscribe route
+app.post('/subscribe',(req,res)=>{
+    //get pushSubscription object
+    const {subscription,message,name,pic}=req.body;
+    //send 201 -resource created
+    res.status(201).send({})
+    //create payload
+    const payload=JSON.stringify({
+        title:`New Message from ${name}😜😜`,
+        body:message,
+        icon:pic
+    });
+    //pass object into sendNotification
+    webpush.sendNotification(subscription,payload).catch(err=>console.error(err))
+});
 
 
-
-mongoose.connect(process.env.DATABASE,{
+mongoose.connect(process.env.LOCALURI,{
     useUnifiedTopology:true,
     useNewUrlParser:true
 }).then(()=>{
@@ -51,24 +67,7 @@ mongoose.connect(process.env.DATABASE,{
     
     socket.on('chat',(data)=>{
         //posting chats on db
-        const {pic,name,message}=data
-            //webpush
-                webpush.setVapidDetails('mailto:imranmat254@gmail.com',publicVapidKey,privateVapidKey);
-                //subscribe route
-                app.post('/subscribe',(req,res)=>{
-                    //get pushSubscription object
-                    const subscription=req.body;
-                    //send 201 -resource created
-                    res.status(201).send({})
-                    //create payload
-                    const payload=JSON.stringify({
-                        title:`New Message from ${name} 😉`,
-                        body:message,
-                        icon:pic
-                    });
-                    //pass object into sendNotification
-                    webpush.sendNotification(subscription,payload).catch(err=>console.error(err))
-                });
+        const {pic,name,message}=data;
         const msg=new Chat({pic,name,message})
         msg.save().then(()=>{
             //emitting chats to sockets
