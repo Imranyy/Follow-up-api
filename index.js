@@ -44,7 +44,7 @@ app.post('/subscribe',(req,res)=>{
 });
 
 
-mongoose.connect(process.env.LOCALURI,{
+mongoose.connect(process.env.DATABASE,{
     useUnifiedTopology:true,
     useNewUrlParser:true
 }).then(()=>{
