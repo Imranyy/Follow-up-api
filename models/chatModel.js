@@ -12,6 +12,10 @@ const chatSchema=new Schema({
     message:{
         type:String,
         require:true
+    },
+    time:{
+        type:String,
+        require:true
     }
 },{
     timestamps:true
