@@ -67,7 +67,7 @@ mongoose.connect(process.env.DATABASE,{
         socket.on('new-user',name=>{
             const users=[]
             users[socket.id]=name;
-            socket.emit('online',name)
+            io.emit('online',name)
         })
     console.log(`socket connection made: ${socket.id}`);
     
