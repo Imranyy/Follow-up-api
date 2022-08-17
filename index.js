@@ -44,7 +44,7 @@ app.post('/subscribe',(req,res)=>{
 });
 
 
-mongoose.connect(process.env.DATABASE,{
+mongoose.connect(process.env.LOCALURI,{
     useUnifiedTopology:true,
     useNewUrlParser:true
 }).then(()=>{
@@ -62,6 +62,12 @@ mongoose.connect(process.env.DATABASE,{
         //getting the chats from db
         Chat.find().then(res=>{
             socket.emit('output',res)
+        })
+        //oneline
+        socket.on('new-user',name=>{
+            const users=[]
+            users[socket.id]=name;
+            socket.emit('online',name)
         })
     console.log(`socket connection made: ${socket.id}`);
     
