@@ -98,6 +98,7 @@ const patchImage=asyncHandler(async(req,res)=>{
       pic:image.pic
     })
   }catch(error){
+    console.log(error.message)
     res.status(500).send('Failed to update chat image')
   }
 })
