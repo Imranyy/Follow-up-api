@@ -1,4 +1,5 @@
-const User=require('../models/userModel')
+const User=require('../models/userModel');
+const Chat=require('../models/chatModel')
 const mongoose=require('mongoose')
 const bcrypt=require('bcryptjs');
 const jwt=require('jsonwebtoken')
@@ -88,6 +89,19 @@ const updateimg=asyncHandler(async(req,res)=>{
  
 })
 
+//patch chat image
+const patchImage=asyncHandler(async(req,res)=>{
+  try{
+    const {name,pic}=req.body
+    const image=await Chat.updateMany({name:name},{$set:{pic:pic}})
+    res.send({
+      pic:image.pic
+    })
+  }catch(error){
+    res.status(500).send('Failed to update chat image')
+  }
+})
+
 //auth Middlerware
 const protect=asyncHandler(async(req,res,next)=>{
   let token
@@ -135,5 +149,6 @@ module.exports={
     verify,
     protect,
     getUsers,
-    updateimg
+    updateimg,
+    patchImage
 }
