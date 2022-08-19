@@ -71,6 +71,17 @@ mongoose.connect(process.env.DATABASE,{
         })
     console.log(`socket connection made: ${socket.id}`);
     
+    //notification
+    socket.on('notify',notify=>{
+        //payload
+        const{message,name,pic}=notify;
+        socket.broadcast.emit('notice',{
+                title:`New Message from ${name}😜😜`,
+                body:message,
+                icon:pic
+        })
+    })
+
     socket.on('chat',(data)=>{
         //posting chats on db
         const {pic,name,message,time}=data;

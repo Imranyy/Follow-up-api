@@ -15,11 +15,11 @@ router.post('/register',register)
 //post login
 router.post('/login',login);
 
-//patch image
-router.patch('/:id',updateimg)
-
 //patch chat image
 router.patch('/image',patchImage);
+
+//patch image
+router.patch('/:id',updateimg);
 
 //get users
 router.get('/users',getUsers);
