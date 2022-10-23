@@ -86,10 +86,18 @@ mongoose.connect(process.env.DATABASE,{
         //posting chats on db
         const {pic,name,message,time}=data;
         const msg=new Chat({pic,name,message,time})
-        msg.save().then(()=>{
-            //emitting chats to sockets
-           io.emit('chat',data)
-        })
+        if(message===".hello"){
+            io.emit('chat',data);
+            //auto response
+            const response='hello too, I am imran ..and you?';
+            io.emit('chat',response)
+        } else{
+            msg.save().then(()=>{
+                //emitting chats to sockets
+               io.emit('chat',data)
+            })
+        }
+       
     })
 })
 })
