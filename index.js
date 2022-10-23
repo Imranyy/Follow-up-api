@@ -88,7 +88,7 @@ mongoose.connect(process.env.DATABASE,{
         const msg=new Chat({pic,name,message,time})
         if(message===".hello"){
             msg.save().then(()=>{
-                io.emit('chat',data);
+                io.emit('chat',data)
             })
             //auto response
             const response={
