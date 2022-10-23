@@ -91,13 +91,18 @@ mongoose.connect(process.env.DATABASE,{
                 io.emit('chat',data);
             })
             //auto response
-            const response=[
-                pic='no',
-                name='Bot☠☠',
-                message='hello too, I am imran ..and you?',
-                time=0000
-            ];
-            const res=new Chat({response})
+            const response={
+                pic:'no',
+                name:'Bot☠☠',
+                message:'hello too, I am imran ..and you?',
+                time:0000
+        };
+            const res=new Chat({
+                pic:response.pic,
+                name:response.name,
+                message:response.message,
+                time:response.time
+            })
             res.save().then(()=>{
                 io.emit('chat', response);
             })
