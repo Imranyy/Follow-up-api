@@ -1,5 +1,5 @@
 const mongoose=require('mongoose');
-const audioSchema=mongoose.Schema({
+const chatSchema=mongoose.Schema({
     userID:{
         type:String,
         require:true
@@ -11,7 +11,7 @@ const audioSchema=mongoose.Schema({
         type:String,
         require:true
     },
-    audioURL:{
+    message:{
         type:String,
         require:true
     }
@@ -19,5 +19,5 @@ const audioSchema=mongoose.Schema({
     timestamps:true
 });
 
-const audioModel=mongoose.model('audio',audioSchema);
-module.exports=audioModel;
+const chatModel=mongoose.model('chat',chatSchema);
+module.exports=chatModel;

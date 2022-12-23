@@ -5,7 +5,7 @@ const {
     loginUser,
     getUserInfo,
     deleteUser,
-    getData,
+    // getData,
     deleteData,
     protectUser,
     protectAdmin,
@@ -17,7 +17,9 @@ const {
     getAdminInfo,
     adminDeleteAnyData,
     deleteAdmin,
-    uploadAudio
+    // uploadMessage,
+    uploadTopic,
+    getTopics,
 }=require('../controllers/podController');
 
 //register admin (only authorised users can register for admin role)
@@ -45,10 +47,13 @@ router.post('/register',registerUser);
 router.post('/login',loginUser);
 
 //get all users (admins only)
-router.get('/users',protectAdmin,getUsers);
+router.get('/admins/users',protectAdmin,getUsers);
+
+//get all users (all users)
+router.get('/users',protectUser,getUsers);
 
 //getting user info (user only)
-router.post('/users/:id',protectUser,getUserInfo);
+router.get('/users/:username',protectUser,getUserInfo);
 
 //deleting user (admin only)
 router.delete('/admins/deleteuser/:userid',protectAdmin,deleteUser);
@@ -59,13 +64,19 @@ router.delete('/admins/deleteadmin/:adminid',protectAdmin,deleteAdmin);
 //deleting any data (admin only)
 router.delete('/admins/deletedata/:dataid',protectAdmin,adminDeleteAnyData);
 
-//upload route (only authenticated users and admins)
-router.post('/upload',protectUser,uploadAudio);
+//upload message (only authenticated users and admins)
+// router.post('/upload',protectUser,uploadMessage);
 
-//getting all audio (only authenticated users)
-router.get('/data',getData);
+//getting all messages (only authenticated users)
+// router.get('/data',getData);
 
-//deleting audio (only authorised user)
+//deleting message (only authorised user)
 router.delete('/data/:dataid',protectUser,deleteData);
+
+//upload topic
+router.post('/topics',protectAdmin,uploadTopic)
+
+//getAllTopics
+router.get('/topics',getTopics)
 
 module.exports=router;

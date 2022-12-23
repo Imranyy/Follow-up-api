@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "Follow Up API",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,7 +7,7 @@
     "start": "nodemon index"
   },
   "keywords": [],
-  "author": "",
+  "author": "Imran",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -19,7 +19,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.5.0",
     "nodemon": "^2.0.19",
-    "socket.io": "^4.5.1",
+    "socket.io": "^4.5.4",
     "web-push": "^3.5.0"
   }
 }

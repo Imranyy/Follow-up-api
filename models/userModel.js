@@ -7,7 +7,8 @@ const userSchema=new schema({
     },
     username:{
         type:String,
-        require:true
+        require:true,
+        unique:true
     },
     email:{
         type:String,

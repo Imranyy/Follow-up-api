@@ -1,10 +1,11 @@
 const User=require('../models/userModel');
 const Admin=require('../models/adminModel');
-const Audio=require('../models/audioModel');
+const Chat=require('../models/chatModel');
+const Topic=require('../models/topicModel');
 const mongoose=require('mongoose')
 const bcrypt=require('bcryptjs');
-const jwt=require('jsonwebtoken')
-require('dotenv').config()
+const jwt=require('jsonwebtoken');
+require('dotenv').config();
 
 //register user
 const registerUser=async(req,res)=>{
@@ -13,32 +14,35 @@ const registerUser=async(req,res)=>{
             if(pic&&username&&email&&password){
                 //check if user exist in the db
                 const userExit=await User.findOne({email});
-                if(userExit){
-                    res.send({msg:'A user already exists with this email ...Try again!'});
-                }
-                //hashing the password
-                const salt=await bcrypt.genSalt(10);
-                const hashedPassword=await bcrypt.hash(password,salt);
-                //creating user account in db
-                const newUser=await User.create({
-                    pic,
-                    username,
-                    email,
-                    password:hashedPassword
-                });
-                if(newUser){
-                    res.status(200).send({
-                        _id:newUser.id,
-                        pic:newUser.pic,
-                        username:newUser.username,
-                        email:newUser.email,
-                        token:generateUserToken(newUser.id)
-                    })
+                const userEmail=await User.findOne({username});
+                if(userExit||userEmail){
+                    res.send({error:'User already exist!'});
                 }else{
-                    res.status(201).send({msg:'Invalid User Data!'})
+                    //hashing the password
+                    const salt=await bcrypt.genSalt(10);
+                    const hashedPassword=await bcrypt.hash(password,salt);
+                    //creating user account in db
+                    const newUser=await User.create({
+                        pic,
+                        username,
+                        email,
+                        password:hashedPassword
+                    });
+                    if(newUser){
+                        res.status(200).send({
+                            msg:'Sign up successful',
+                            _id:newUser.id,
+                            pic:newUser.pic,
+                            username:newUser.username,
+                            email:newUser.email,
+                            token:generateUserToken(newUser.id)
+                        })
+                    }else{
+                        res.status(201).send({error:'Invalid User Data!'})
+                    }
                 }
             }else{
-                res.send({msg:'Enter all fields'});
+                res.send({error:'Enter all fields'});
             }
         } catch (error) {
             res.status(500).send(error.message)
@@ -51,7 +55,7 @@ const loginUser=async(req,res)=>{
         const {email,password} =req.body;
         const user=await User.findOne({email});
         if(user&&(await bcrypt.compare(password,user.password))){
-            res.status(200).send({
+            res.status(200).send({msg:`Welcome ${user.username}`,
                 _id:user.id,
                 pic:user.pic,
                 username:user.username,
@@ -59,7 +63,7 @@ const loginUser=async(req,res)=>{
                 token:generateUserToken(user.id)
             })
         }else{
-            res.status(400).send({msg:'Invalid Credentials'})
+            res.status(400).send({error:'Invalid Credentials'})
         }
     }catch(err){
         res.status(500).send(err.message)
@@ -71,7 +75,7 @@ const registerAdmin=async(req,res)=>{
     try {
         const {userid}=req.params;
         if(!mongoose.Types.ObjectId.isValid(userid)){
-            return res.status(404).send({msg:'Must be a valid user so that you can register for admin roles'})
+            return res.status(404).send({error:'Must be a valid user so that you can register for admin roles'})
           }
           const validUser=await User.findById({_id:userid})
           if(validUser){
@@ -80,7 +84,7 @@ const registerAdmin=async(req,res)=>{
                 //check if admin exist in the db
                 const adminExit=await Admin.findOne({userID:userid});
                 if(adminExit){
-                    res.send({msg:'Admin exists already!'});
+                    res.send({error:'Admin exists already!'});
                 }
                 //hashing the password
                 const salt=await bcrypt.genSalt(10);
@@ -103,10 +107,10 @@ const registerAdmin=async(req,res)=>{
                     AdminToken:generateAdminToken(registerNewAdmin.id)
                 })
             }else{
-                res.send({msg:'Enter All the required fields'})
+                res.send({error:'Enter All the required fields'})
             }
           }else{
-            res.status(404).send({msg:'Must be a valid user so that you can register for admin roles'});
+            res.status(404).send({error:'Must be a valid user so that you can register for admin roles'});
           }
     } catch (error) {
         res.status(500).send(error.message)
@@ -128,7 +132,7 @@ const loginAdmin=async(req,res)=>{
             adminToken:generateAdminToken(admin.id)
         })
     }else{
-        res.status(400).send({msg:'Invalid Credentials'})
+        res.status(400).send({error:'Invalid Credentials'})
     }
  } catch (error) {
     res.status(500).send(error.message);
@@ -150,7 +154,7 @@ const getAdminInfo=async(req,res)=>{
     try {
         const {id}=req.params;
         if(!mongoose.Types.ObjectId.isValid(id)){
-            return res.status(404).send({msg:'No such Admin'})
+            return res.status(404).send({error:'No such Admin'})
           }
           const admin=await Admin.findById({_id:id});
           res.status(200).send({
@@ -158,7 +162,7 @@ const getAdminInfo=async(req,res)=>{
             admin
         })
           if(!admin){
-            res.send(404).send({msg:'Admin doesnt exit!'})
+            res.send(404).send({error:'Admin doesnt exit!'})
           } 
     } catch (error) {
         res.status(500).send(error.message)
@@ -179,11 +183,11 @@ const protectUser=async(req,res,next)=>{
             next()
   
         }catch (error){
-            res.status(401).send({msg:'Not Authorised☠'})
+            res.status(401).send({error:'Not Authorised☠'})
         }
     }
     if(!token){
-      res.status(401).send({msg:'No Token Available☠'})
+      res.status(401).send({error:'No Token Available☠'})
     }
   };
 
@@ -201,11 +205,11 @@ const protectAdmin=async(req,res,next)=>{
             next()
   
         }catch (error){
-            res.status(401).send({msg:'Not Authorised☠'})
+            res.status(401).send({error:'Not Authorised☠'})
         }
     }
     if(!token){
-      res.status(401).send({msg:'No Token Available☠'})
+      res.status(401).send({error:'No Token Available☠'})
     }
   };
   
@@ -229,14 +233,14 @@ const protectAdmin=async(req,res,next)=>{
       res.status(200).send(true)
     } catch (error) {
       console.log(error.message)
-      res.status(401).send({msg:'Not Authorised☠'})
+      res.status(401).send({error:'Not Authorised☠'})
     }
   }
 
-//get all users (admin only)
+//get all users (admin only and users)
 const getUsers=async(req,res)=>{
     try {
-        const users=await User.find({});
+        const users=await User.find({}).sort({createdAt:-1});
         res.status(200).send(users) 
     } catch (error) {
         res.status(500).send(error.message)
@@ -246,14 +250,12 @@ const getUsers=async(req,res)=>{
 //getUserInfo
 const getUserInfo=async(req,res)=>{
     try {
-        const {id}=req.params;
-        if(!mongoose.Types.ObjectId.isValid(id)){
-            return res.status(404).send({msg:'No such User'})
-          } 
-          const info=await User.findById({_id:id});
-          res.status(200).send(info);
-          if(!info){
-            res.status(400).send({msg:"User doesn't exit!"})
+        const {username}=req.params;
+          const info=await User.findOne({username});
+          if(info){
+              res.status(200).send(info);
+            }else{
+              res.status(400).send({error:"User doesn't exit!"})
           }
     } catch (error) {
         res.status(500).send(error.message)
@@ -265,7 +267,7 @@ const deleteUser=async(req,res)=>{
     try {
         const {userid}=req.params;
         if(!mongoose.Types.ObjectId.isValid(userid)){
-            return res.status(404).send({msg:'No such User'})
+            return res.status(404).send({error:'No such User'})
           } 
           const user=await User.findById({_id:userid});
           const ifAdmin=await Admin.findOneAndDelete({userID:user.id});
@@ -275,7 +277,7 @@ const deleteUser=async(req,res)=>{
             }else if(userDelete){
                 res.send({msg:'User Deleted',user});
             }else{
-              res.status(404).send({msg:"User can't be deleted!"});
+              res.status(404).send({error:"User can't be deleted!"});
           }
     } catch (error) {
         res.status(500).send(error.message);
@@ -287,13 +289,13 @@ const deleteAdmin=async(req,res)=>{
     try {
         const {adminid}=req.params;
         if(!mongoose.Types.ObjectId.isValid(adminid)){
-            return res.status(404).send({msg:'No such Admin'})
+            return res.status(404).send({error:'No such Admin'})
           } 
           const admin=await Admin.findByIdAndDelete({_id:adminid});
           if(admin){
                 res.send({msg:"Admin deleted",admin})
             }else{
-              res.status(404).send({msg:"Admin can't be deleted!"});
+              res.status(404).send({error:"Admin can't be deleted!"});
           }
     } catch (error) {
         res.status(500).send(error.message);
@@ -305,13 +307,13 @@ const adminDeleteAnyData=async(req,res)=>{
     try {
         const {dataid}=req.params;
         if(!mongoose.Types.ObjectId.isValid(dataid)){
-            return res.status(404).send({msg:"No such Audio"})
+            return res.status(404).send({error:"No such Audio"})
           } 
-          const deleteData=await Audio.findByIdAndDelete({_id:dataid})
+          const deleteData=await Chat.findByIdAndDelete({_id:dataid})
           if(deleteData){
               res.status(200).send({msg:'Audio deleted!',deleteData});
             }else{
-              res.status(404).send({msg:"Audio can't be deleted!"})
+              res.status(404).send({error:"Audio can't be deleted!"})
           }
     } catch (error) {
         res.status(500).send(error.message) 
@@ -319,33 +321,33 @@ const adminDeleteAnyData=async(req,res)=>{
 }
 
 //get all  data (users and admins)
-const getData=async(req,res)=>{
-    try {
-        const data=await Audio.find({});
-        res.send(data);
-    } catch (error) {
-        res.status(500).send(error.message)
-    }
-}
+// const getData=async(req,res)=>{
+//     try {
+//         const data=await Chat.find({});
+//         res.send(data);
+//     } catch (error) {
+//         res.status(500).send(error.message)
+//     }
+// }
 
 //delete a data (only the user who added the data can delete it)
 const deleteData=async(req,res)=>{
     try {
         const {dataid}=req.params;
         if(!mongoose.Types.ObjectId.isValid(dataid)){
-            return res.status(404).send({msg:"No such Audio"})
+            return res.status(404).send({error:"No such Audio"})
           } 
-          const dataFound=await Audio.findById({_id:dataid});
+          const dataFound=await Chat.findById({_id:dataid});
           if(dataFound){
             const {userID}=req.body;
-            const userDeletes=await Audio.findOneAndDelete({userID})
+            const userDeletes=await Chat.findOneAndDelete({userID})
             if(userDeletes){
                 res.status(200).send({msg:"Audio deleted",userDeletes})
             }else if(!userDeletes){
-                res.status(400).send({msg:"You can't delete this audio!"})
+                res.status(400).send({error:"You can't delete this audio!"})
             }
             }else if(!dataFound){
-            res.status(404).send({msg:"Can't delete twice!"})
+            res.status(404).send({error:"Can't delete twice!"})
           }
 
     } catch (error) {
@@ -353,17 +355,51 @@ const deleteData=async(req,res)=>{
     }
 }
 
-//upload an audio
-const uploadAudio=async(req,res)=>{
-   try {
-    const {userID,pic,username,audioURL}=req.body;
-    const audio= await Audio.create({
-        userID,pic,username,audioURL
-    })
-    res.status(200).send({msg:'Audio sent successful',audio})
-   } catch (error) {
-    res.status(500).send({msg:"Failed to send!"});
-   }
+//upload a message
+// const uploadMessage=async(req,res)=>{
+//    try {
+//     const {userID,pic,username,message}=req.body;
+//     if(userID&&pic&&username&&message){
+//         await Chat.create({
+//             userID,pic,username,message
+//         })
+//         res.status(200).send({msg:'Message Sent'})
+//     }else{
+//         res.send({error:"Message not sent, please enter all fields"})
+//     }
+//    } catch (error) {
+//     res.status(500).send({error:"Failed to send!",error});
+//    }
+// }
+
+//upload topics
+const uploadTopic=async(req,res)=>{
+    try {
+        const {userID,pic,adminname,message}=req.body;
+        const topicExist=await Topic.findOne({message});
+        if(topicExist){
+            res.send({error:'This topic exist!'})
+        }else{
+            if(userID&&pic&&adminname&&message){
+                await Topic.create({userID,pic,adminname,message});
+                res.status(200).send({msg:"Topic added"})
+            }else{
+                res.send({error:'Please enter all fields!'})
+            }
+        }
+    } catch (error) {
+        res.status(500).send({error:error.message});
+    }
+}
+
+//getAllTopic
+const getTopics=async(req,res)=>{
+    try {
+        const getTopic=await Topic.find({})
+        res.status(200).send(getTopic)
+    } catch (error) {
+        res.status(500).send({error:error.message});
+    }
 }
 
 module.exports={
@@ -374,9 +410,9 @@ module.exports={
     loginUser,
     getUserInfo,
     deleteUser,
-    getData,
+    // getData,
     deleteData,
-    uploadAudio,
+    // uploadMessage,
     getUsers,
     loginAdmin,
     registerAdmin, 
@@ -384,4 +420,6 @@ module.exports={
     getAdminInfo,
     deleteAdmin,
     adminDeleteAnyData,
+    uploadTopic,
+    getTopics,
 }
