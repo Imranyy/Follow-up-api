@@ -5,9 +5,122 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Follow-up API</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
     <script src="js/app.js" defer></script>
 </head>
 <body>
-    <h1>Hey there</h1>
+    <header>
+        <h1><span class="red">API</span> Documentation</h1>
+        <h3>Welcome To Follow-up API</h3>
+    </header>
+
+    <section class="first-section">
+        <article>
+            <h1>🪐 About API</h1>
+            <p>
+                This is an API to a frontend application called <strong>Follow-up</strong>, the web app itself is a chat platform. It was created to offer 
+                a private room to a group to communicate. This is API is connected to it. Visit the web app at <a href="https://follow-up-com.web.app">https://follow-up-com.web.app</a>.
+            </p><br/>
+            <p>
+                This is open source api, feel free to modify it.
+                Get Source at <a href="https://github.com/Imranyy/Follow-up-api.git" target="_blank" rel="noreferrer">https://github.com/Imranyy/Follow-up-api.git</a>.
+                Fork or clone the repo, 
+            </p>
+            
+        </article>
+        <article>
+            <h1>💻 Run It Localhost</h1>
+            <div class="code">
+                <code>
+                    git clone https://github.com
+                    /Imranyy/Follow-up-api.git
+                </code><br/>
+                <code>npm install</code><br/>
+                <code>npm start</code><br/>
+            </div>
+        </article>
+    </section>
+
+    <section>
+        <article>
+            <h1>📚 Technical stuff</h1>
+            <p>
+                API was created using the MVC (models, views and controllers) structure.
+                <br/>It interacts with MongoDB.
+                <br/>Server running on port 5000<br/>
+                <br/>All Environment variables are in a <i>.env</i> file.
+                <br/>In your case create a <i>.env</i> file and declared the following variables:
+                <div class="code2">
+                    <code>LOCALURI=mongodb://127.0.0.1
+                        :27017/follow-up
+                    </code><br/>
+                    <code>JWT_USER_SECRET=<i>Your-JWT-User-Secret</i></code><br/>
+                    <code>JWT_ADMIN_SECRET=<i>Your-JWT-Admin-Secret</i></code>
+                </div>
+            </p>
+        </article>
+        <article>
+            <h1>📓 On index.js</h1>
+            <div class="code">
+                <code>
+                    const express=
+                    require('express')
+                </code><br/>
+                <code>
+                    const mongoose=
+                    require('mongoose')
+                </code><br/>
+                <code>
+                    const cors=
+                    require('cors')
+                </code><br/>
+                <code>require
+                    ('dotenv').config()
+                </code><br/><br/>
+                <code>
+                    const app=
+                    express()
+                </code><br/>
+                <code>
+                    app.
+                    use(cors({}))
+                </code><br/><br/>
+                <code>
+                    mongoose.
+                    connect(process
+                    .env.LOCALURI,{
+                        useUnifiedTopology:
+                        true,<br/>
+                        useNewUrlParser:true
+                    }).then(()=>{
+                        <br/>//listening to server
+                        <br/>const port=5000||process.env
+                        .PORT;
+                        <br/>const server=app.listen(port
+                        ,()=>{
+                            <br/>console.log(`listening to port ${port}`)
+                        })
+                    }
+                </code>
+            </div>
+        </article>
+    </section>
+
+    <!-- footer -->
+    <footer>
+        <div>
+            <h2>Social Media Links</h1>
+            <ul>
+                <li><a href="https://wa.me/+254754423664" target="_blank" rel="noreferrer">Message Me On Whatsapp</a></li>
+                <li><a href="mailto:imranmat254@gmail.com" target="_blank" rel="noreferrer">Send Me Email</a></li>
+            </ul>
+        </div>
+        <div class="other-links">
+            <h2>Other Links</h1>
+            <ul>
+                <li><a href="https://follow-up-com.web.app" target="_blank" rel="noreferrer">Visit Follow-Up</a></li>
+            </ul>
+        </div>
+    </footer>
 </body>
 </html>

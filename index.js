@@ -11,7 +11,7 @@ const app =express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
-// app.use(express.static('views'));
+app.use(express.static('views'));
 
 
 //routes
@@ -19,7 +19,7 @@ app.use('/api',require('./routes/api'));
 
 //connecting to db then listening to server
 // mongoose.set('strictQuery', true);
-mongoose.connect(process.env.LOCALURI,{
+mongoose.connect(process.env.DATABASE,{
     useUnifiedTopology:true,
     useNewUrlParser:true
 }).then(()=>{
