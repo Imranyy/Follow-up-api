@@ -1,4 +1,7 @@
 @media screen and (max-width:1000px) {
+    header{
+        width: 70vw;
+    }
     section{
         display: grid;
         grid-template-columns: repeat(1,1fr);
@@ -10,6 +13,9 @@
     }
 }
 @media screen and (max-width:500px) {
+    .code{
+        padding: 20px;
+    }
     footer{
         display:flex;
         flex-direction: column;

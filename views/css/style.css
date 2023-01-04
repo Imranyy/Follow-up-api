@@ -33,6 +33,9 @@ section article{
     width: 40vw;
     line-height: 20px;
 }
+article h1{
+    margin:0 0 10px 0;
+}
 .code{
     background: var(--black);
     color: var(--grey);
